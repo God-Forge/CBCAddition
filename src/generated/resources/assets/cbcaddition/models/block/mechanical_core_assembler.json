@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "cbcaddition:block/andesite_casing",
+    "front": "minecraft:block/furnace_front",
+    "side": "cbcaddition:block/andesite_casing",
+    "top": "cbcaddition:block/andesite_casing"
+  }
+}

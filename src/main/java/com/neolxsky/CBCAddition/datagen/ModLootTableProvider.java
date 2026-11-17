@@ -31,12 +31,14 @@ public class ModLootTableProvider extends LootTableProvider {
         protected void generate() {
             dropSelf(ModBlocks.ANDESITE_FORGE.get());
             dropSelf(ModBlocks.BRASS_FORGE.get());
+            dropSelf(ModBlocks.MECHANICAL_CORE_ASSEMBLER.get());
         }
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
             // 只校验本模组的方块，否则原版方块（如 stone）也会被要求提供掉落表
-            return List.of(ModBlocks.ANDESITE_FORGE.get(), ModBlocks.BRASS_FORGE.get());
+            return List.of(ModBlocks.ANDESITE_FORGE.get(), ModBlocks.BRASS_FORGE.get(),
+                    ModBlocks.MECHANICAL_CORE_ASSEMBLER.get());
         }
     }
 }

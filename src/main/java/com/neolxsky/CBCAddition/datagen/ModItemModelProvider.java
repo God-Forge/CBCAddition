@@ -18,5 +18,6 @@ public class ModItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         withExistingParent("andesite_forge", modLoc("block/andesite_forge"));
         withExistingParent("brass_forge", modLoc("block/brass_forge"));
+        withExistingParent("mechanical_core_assembler", modLoc("block/mechanical_core_assembler"));
     }
 }

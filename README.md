@@ -7,7 +7,7 @@
 |---|---|
 | 模组 ID | `cbcaddition`（必须小写） |
 | 显示名 | `CBCAddition` |
-| 版本 | `0.2.0` |
+| 版本 | `0.3.0` |
 | Minecraft | `1.20.1` |
 | Forge | `47.2.20`（依赖范围 `[47,)`） |
 | Java | `17` |
@@ -61,6 +61,20 @@
 两张贴图已从 Create 0.5.1.j 复制进 `src/main/resources/assets/cbcaddition/textures/block/`
 （16×16 PNG），因此未安装 Create 时也能正确显示。两台机器都有 `facing` 水平朝向属性，放置时朝向玩家。
 
+### 机械核心装配机（Mechanical Core Assembler）
+
+| 项 | 内容 |
+|---|---|
+| 注册 ID | `cbcaddition:mechanical_core_assembler` |
+| 配方 A | `1 安山机壳 + 1 大齿轮 → 3 机械核心`（`create:andesite_casing` + `create:large_cogwheel`） |
+| 配方 B | `1 工业镀铁块 + 1 大型工业齿轮 → 10 机械核心`（`design_decor:industrial_plating_block` + `design_decor:industrial_gear_large`） |
+| 槽位 | `0` = A / `1` = B / `2` = 产物（两种配方均为无序组合，槽位顺序不限） |
+| 节流 | 每 20 tick（1 秒）完成一次合成 |
+
+产物「机械核心」由整合包的 KubeJS 物品提供（`kubejs:mechanical_core`）；
+任一输入模组缺失时对应配方自动失效，不报错。外观：正面为原版熔炉纹理，其余面使用内置的
+Create 安山机壳贴图（`andesite_casing.png`，同样从 Create 0.5.1.j 复制）。
+
 ### 合成判定
 
 - 输入槽数量不足 → 直接返回（不消耗、不产出）
@@ -113,19 +127,21 @@
 
 ### 创造模式标签页
 
-`ModCreativeTabs` 通过 `BuildCreativeModeTabContentsEvent` 把两台机器加入：
+`ModCreativeTabs` 通过 `BuildCreativeModeTabContentsEvent` 把机器加入：
 
 - `FUNCTIONAL_BLOCKS`（功能方块）
 - `SEARCH`（保证创造模式搜索能查到）
 
 ### JEI 配方查看
 
-安装 JEI 后，两台机器的配方会在 JEI 中以独立分类显示：
+安装 JEI 后，三台机器的配方会在 JEI 中以独立分类显示：
 
 - 安山合金炉：铁锭 ×1 + 安山岩 ×9 → 安山合金 ×10
 - 黄铜合金炉：铜锭 ×1 + 金锭 ×1 → 黄铜锭 ×2
-- 两个方块都注册为**催化剂**：在 JEI 搜索框里对着方块按 `R`（用途）即可打开对应配方
-- JEI 插件读取方块实体的常量与 `create:*` 物品 ID；未装 Create 时不显示对应配方，
+- 机械核心装配机：安山机壳 ×1 + 大齿轮 ×1 → 机械核心 ×3；
+  工业镀铁块 ×1 + 大型工业齿轮 ×1 → 机械核心 ×10
+- 三个方块都注册为**催化剂**：在 JEI 搜索框里对着方块按 `R`（用途）即可打开对应配方
+- JEI 插件读取方块实体的常量与相关物品 ID；未装对应模组时不显示该配方，
   未装 JEI 时插件类不会被加载（编译期依赖，运行时不打包）
 
 ### 简化配方
@@ -143,9 +159,9 @@
 CBCAddition/
 ├── build.gradle                     # ForgeGradle 6 构建脚本（UTF-8 源码编码）
 ├── settings.gradle                  # 插件仓库（BMCLAPI 镜像优先）
-├── gradle.properties                # 版本 / mod 元数据（版本 0.2.0）
+├── gradle.properties                # 版本 / mod 元数据（版本 0.3.0）
 ├── LICENSE                          # GNU GPL v3.0 全文
-├── build/libs/cbcaddition-0.2.0.jar # 构建产物
+├── build/libs/cbcaddition-0.3.0.jar # 构建产物
 ├── src/main/java/com/neolxsky/CBCAddition/
 │   ├── CBCAddition.java             # 主类：注册表 + 网络 + 客户端初始化
 │   ├── block/
@@ -153,11 +169,14 @@ CBCAddition/
 │   │   ├── AndesiteForgeBlock.java        # 安山合金炉方块（facing / 右键开 GUI / 快捷交互）
 │   │   ├── AndesiteForgeBlockEntity.java  # 槽位 / 合成 / 六面 IO / NBT
 │   │   ├── BrassForgeBlock.java           # 黄铜合金炉方块
-│   │   └── BrassForgeBlockEntity.java
+│   │   ├── BrassForgeBlockEntity.java
+│   │   ├── MechanicalCoreAssemblerBlock.java        # 机械核心装配机方块
+│   │   └── MechanicalCoreAssemblerBlockEntity.java  # 两套无序配方 / 六面 IO / NBT
 │   ├── client/
 │   │   ├── ClientSetup.java               # 注册 GUI 屏幕（仅客户端）
 │   │   ├── AndesiteForgeScreen.java       # 熔炉背景 + IO 方向面板
-│   │   └── BrassForgeScreen.java
+│   │   ├── BrassForgeScreen.java
+│   │   └── MechanicalCoreAssemblerScreen.java
 │   ├── datagen/                           # 数据生成（runData）
 │   │   ├── DataGenerators.java            # GatherDataEvent 入口
 │   │   ├── ModRecipeProvider.java         # 简化配方生成
@@ -171,7 +190,8 @@ CBCAddition/
 │   │   └── ForgeRecipeCategory.java       # 熔炉槽位背景的配方分类
 │   ├── menu/
 │   │   ├── AndesiteForgeMenu.java         # 容器菜单（服务端 + 网络构造）
-│   │   └── BrassForgeMenu.java
+│   │   ├── BrassForgeMenu.java
+│   │   └── MechanicalCoreAssemblerMenu.java
 │   ├── network/
 │   │   └── ModNetwork.java                # SimpleChannel + SetFaceModePacket（按接口处理）
 │   └── registry/
@@ -193,7 +213,7 @@ CBCAddition/
 
 ```bat
 set JAVA_HOME=C:\Users\neolx\.jdks\zulu17.0.21
-gradlew build          :: 产物：build/libs/cbcaddition-0.2.0.jar
+gradlew build          :: 产物：build/libs/cbcaddition-0.3.0.jar
 gradlew runClient      :: 启动开发客户端（工作目录 run/）
 gradlew runServer      :: 启动开发服务端（工作目录 run/）
 gradlew runData        :: 重新生成资源（输出到 src/generated/resources）
@@ -224,12 +244,12 @@ gradlew runData
 ## Git 与版本
 
 - 远程仓库：<https://github.com/God-Forge/CBCAddition>
-- 当前版本：`v0.2.0`（`gradle.properties` 的 `mod_version`）
+- 当前版本：`v0.3.0`（`gradle.properties` 的 `mod_version`）
 - 提交注释统一使用**简体中文**
 - **未经许可不得推送到 GitHub**：本地提交随意，推送前需先获得确认
 - 已忽略：`.gradle/`、`build/`、`run/`、IDE 配置等（见 `.gitignore`）
 
-## 修复记录（v0.2.0）
+## 修复记录（v0.3.0）
 
 本轮扫描发现的问题已全部处理：
 
@@ -247,6 +267,8 @@ gradlew runData
 9. **JEI 无法查看机器配方** —— 配方原本硬编码在 `tick()`，JEI 抓不到；新增
    `compat/jei` 插件，以独立分类展示两台机器的配方，并把方块注册为催化剂。
 10. **GUI 布局调整** —— 改为 `A B → C` 横向结构，槽位框与箭头沿用原版熔炉贴图。
+11. **新增机械核心装配机** —— 支持 `安山机壳 + 大齿轮 → 3 机械核心` 与
+    `工业镀铁块 + 大型工业齿轮 → 10 机械核心` 两套无序配方，含 GUI、六面 IO 与 JEI 分类。
 
 ## 扩展指南
 

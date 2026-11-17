@@ -3,6 +3,7 @@ package com.neolxsky.CBCAddition.registry;
 import com.neolxsky.CBCAddition.CBCAddition;
 import com.neolxsky.CBCAddition.block.AndesiteForgeBlockEntity;
 import com.neolxsky.CBCAddition.block.BrassForgeBlockEntity;
+import com.neolxsky.CBCAddition.block.MechanicalCoreAssemblerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -24,6 +25,11 @@ public final class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<BrassForgeBlockEntity>> BRASS_FORGE =
             BLOCK_ENTITIES.register("brass_forge",
                     () -> BlockEntityType.Builder.of(BrassForgeBlockEntity::new, ModBlocks.BRASS_FORGE.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<MechanicalCoreAssemblerBlockEntity>> MECHANICAL_CORE_ASSEMBLER =
+            BLOCK_ENTITIES.register("mechanical_core_assembler",
+                    () -> BlockEntityType.Builder.of(MechanicalCoreAssemblerBlockEntity::new,
+                            ModBlocks.MECHANICAL_CORE_ASSEMBLER.get()).build(null));
 
     private ModBlockEntities() {
     }

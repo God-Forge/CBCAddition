@@ -3,6 +3,7 @@ package com.neolxsky.CBCAddition.registry;
 import com.neolxsky.CBCAddition.CBCAddition;
 import com.neolxsky.CBCAddition.block.AndesiteForgeBlock;
 import com.neolxsky.CBCAddition.block.BrassForgeBlock;
+import com.neolxsky.CBCAddition.block.MechanicalCoreAssemblerBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -35,6 +36,13 @@ public final class ModBlocks {
     public static final RegistryObject<Item> BRASS_FORGE_ITEM =
             BLOCK_ITEMS.register("brass_forge",
                     () -> new BlockItem(BRASS_FORGE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Block> MECHANICAL_CORE_ASSEMBLER =
+            BLOCKS.register("mechanical_core_assembler", MechanicalCoreAssemblerBlock::new);
+
+    public static final RegistryObject<Item> MECHANICAL_CORE_ASSEMBLER_ITEM =
+            BLOCK_ITEMS.register("mechanical_core_assembler",
+                    () -> new BlockItem(MECHANICAL_CORE_ASSEMBLER.get(), new Item.Properties()));
 
     private ModBlocks() {
     }

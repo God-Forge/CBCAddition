@@ -30,5 +30,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         mcLoc("block/furnace_front"),
                         modLoc("block/brass_casing"),
                         modLoc("block/brass_casing")));
+
+        horizontalBlock(ModBlocks.MECHANICAL_CORE_ASSEMBLER.get(),
+                models().orientableWithBottom("mechanical_core_assembler",
+                        modLoc("block/andesite_casing"),
+                        mcLoc("block/furnace_front"),
+                        modLoc("block/andesite_casing"),
+                        modLoc("block/andesite_casing")));
     }
 }

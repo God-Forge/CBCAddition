@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "cbcaddition:block/mechanical_core_assembler",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "cbcaddition:block/mechanical_core_assembler"
+    },
+    "facing=south": {
+      "model": "cbcaddition:block/mechanical_core_assembler",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "cbcaddition:block/mechanical_core_assembler",
+      "y": 270
+    }
+  }
+}

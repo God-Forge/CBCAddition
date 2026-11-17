@@ -22,9 +22,11 @@ public class ModLanguageProvider extends LanguageProvider {
         if ("zh_cn".equals(locale)) {
             add(ModBlocks.ANDESITE_FORGE.get(), "安山合金炉");
             add(ModBlocks.BRASS_FORGE.get(), "黄铜合金炉");
+            add(ModBlocks.MECHANICAL_CORE_ASSEMBLER.get(), "机械核心装配机");
         } else {
             add(ModBlocks.ANDESITE_FORGE.get(), "Andesite Alloy Forge");
             add(ModBlocks.BRASS_FORGE.get(), "Brass Alloy Forge");
+            add(ModBlocks.MECHANICAL_CORE_ASSEMBLER.get(), "Mechanical Core Assembler");
         }
     }
 }
