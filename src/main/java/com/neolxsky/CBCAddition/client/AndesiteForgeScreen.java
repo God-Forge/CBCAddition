@@ -47,9 +47,39 @@ public class AndesiteForgeScreen extends AbstractContainerScreen<AndesiteForgeMe
         renderTooltip(graphics, mouseX, mouseY);
     }
 
+    /** 自绘背景：浅灰面板 + 原版熔炉槽位纹理 + 原版箭头（A B → C 布局）。 */
+    private void drawBackground(GuiGraphics graphics) {
+        graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xFFC6C6C6);
+        graphics.renderOutline(leftPos, topPos, imageWidth, imageHeight, 0xFF373737);
+        graphics.renderOutline(leftPos + 1, topPos + 1, imageWidth - 2, imageHeight - 2, 0xFFFFFFFF);
+
+        // 机器槽位：A / B → C
+        drawSlot(graphics, 32, 36);
+        drawSlot(graphics, 56, 36);
+        drawSlot(graphics, 112, 36);
+
+        // 原版熔炉箭头材质（位置随布局调整，贴图不变）
+        graphics.blit(TEXTURE, leftPos + 82, topPos + 38, 79, 35, 24, 16);
+
+        // 玩家背包 3×9 与快捷栏
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 9; col++) {
+                drawSlot(graphics, 8 + col * 18, 84 + row * 18);
+            }
+        }
+        for (int col = 0; col < 9; col++) {
+            drawSlot(graphics, 8 + col * 18, 142);
+        }
+    }
+
+    /** 复用原版熔炉 GUI 的槽位纹理绘制一个空槽。 */
+    private void drawSlot(GuiGraphics graphics, int x, int y) {
+        graphics.blit(TEXTURE, leftPos + x - 1, topPos + y - 1, 55, 16, 18, 18);
+    }
+
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        drawBackground(graphics);
 
         // IO 按钮常驻显示
         int ioX = leftPos + IO_BUTTON_X;

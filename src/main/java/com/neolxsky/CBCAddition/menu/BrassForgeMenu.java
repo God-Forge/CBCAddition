@@ -20,9 +20,10 @@ public class BrassForgeMenu extends AbstractContainerMenu {
         super(ModMenus.BRASS_FORGE.get(), id);
         this.blockEntity = blockEntity;
 
-        addSlot(new Slot(blockEntity.container(), BrassForgeBlockEntity.SLOT_COPPER, 56, 17));
-        addSlot(new Slot(blockEntity.container(), BrassForgeBlockEntity.SLOT_GOLD, 56, 53));
-        addSlot(new Slot(blockEntity.container(), BrassForgeBlockEntity.SLOT_OUTPUT, 116, 31) {
+        // 机器槽位：A / B 横向并排 → C（箭头材质沿用原版熔炉）
+        addSlot(new Slot(blockEntity.container(), BrassForgeBlockEntity.SLOT_COPPER, 32, 36));
+        addSlot(new Slot(blockEntity.container(), BrassForgeBlockEntity.SLOT_GOLD, 56, 36));
+        addSlot(new Slot(blockEntity.container(), BrassForgeBlockEntity.SLOT_OUTPUT, 112, 36) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;

@@ -20,10 +20,10 @@ public class AndesiteForgeMenu extends AbstractContainerMenu {
         super(ModMenus.ANDESITE_FORGE.get(), id);
         this.blockEntity = blockEntity;
 
-        // 机器槽位（与原版熔炉布局一致）
-        addSlot(new Slot(blockEntity.container(), AndesiteForgeBlockEntity.SLOT_IRON, 56, 17));
-        addSlot(new Slot(blockEntity.container(), AndesiteForgeBlockEntity.SLOT_ANDESITE, 56, 53));
-        addSlot(new Slot(blockEntity.container(), AndesiteForgeBlockEntity.SLOT_OUTPUT, 116, 31) {
+        // 机器槽位：A / B 横向并排 → C（箭头材质沿用原版熔炉）
+        addSlot(new Slot(blockEntity.container(), AndesiteForgeBlockEntity.SLOT_IRON, 32, 36));
+        addSlot(new Slot(blockEntity.container(), AndesiteForgeBlockEntity.SLOT_ANDESITE, 56, 36));
+        addSlot(new Slot(blockEntity.container(), AndesiteForgeBlockEntity.SLOT_OUTPUT, 112, 36) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;
