@@ -76,10 +76,16 @@ repositories {
     maven { url = 'https://maven.minecraftforge.net/' }
     mavenCentral()
     maven { url = 'https://bmclapi2.bangbang93.com/maven' }
+    // JEI（编译时可选依赖，运行时由整合包提供）
+    maven { url = 'https://maven.blamejared.com' }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // JEI 仅用于编译插件；运行时由玩家安装的 JEI 提供，不会打进 jar
+    compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
 }
 
 tasks.withType(ProcessResources).configureEach {

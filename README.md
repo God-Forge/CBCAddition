@@ -28,6 +28,7 @@
 | Gradle | 8.8（`gradlew` wrapper，发行包走腾讯云镜像） |
 | ForgeGradle | 6.0.24 |
 | Create | 0.5.1.j（**可选**依赖，`[0.5.1,)`，`ordering = AFTER`；缺失时机器静默不产出） |
+| JEI | 15.20.0.129（**编译期**依赖，仅用于插件编译；运行时由整合包提供，不会打进 jar） |
 
 `mods.toml` 中声明：`forge` / `minecraft` 为强制依赖，`create` 为可选依赖（便于单独测试）。
 
@@ -116,6 +117,16 @@
 - `FUNCTIONAL_BLOCKS`（功能方块）
 - `SEARCH`（保证创造模式搜索能查到）
 
+### JEI 配方查看
+
+安装 JEI 后，两台机器的配方会在 JEI 中以独立分类显示：
+
+- 安山合金炉：铁锭 ×1 + 安山岩 ×9 → 安山合金 ×10
+- 黄铜合金炉：铜锭 ×1 + 金锭 ×1 → 黄铜锭 ×2
+- 两个方块都注册为**催化剂**：在 JEI 搜索框里对着方块按 `R`（用途）即可打开对应配方
+- JEI 插件读取方块实体的常量与 `create:*` 物品 ID；未装 Create 时不显示对应配方，
+  未装 JEI 时插件类不会被加载（编译期依赖，运行时不打包）
+
 ### 简化配方
 
 | 配方 | 内容 | 说明 |
@@ -153,6 +164,10 @@ CBCAddition/
 │   │   ├── ModItemModelProvider.java      # 物品模型生成
 │   │   ├── ModLanguageProvider.java       # en_us / zh_cn 语言生成
 │   │   └── ModLootTableProvider.java      # 方块掉落表生成
+│   ├── compat/jei/                        # JEI 集成
+│   │   ├── CbcJeiPlugin.java              # 插件入口：RecipeType / 配方 / 催化剂
+│   │   ├── ForgeRecipe.java               # JEI 展示用配方数据
+│   │   └── ForgeRecipeCategory.java       # 熔炉槽位背景的配方分类
 │   ├── menu/
 │   │   ├── AndesiteForgeMenu.java         # 容器菜单（服务端 + 网络构造）
 │   │   └── BrassForgeMenu.java
@@ -190,6 +205,7 @@ gradlew runData        :: 重新生成资源（输出到 src/generated/resources
 - 依赖解析顺序：Forge 官方仓库 → Maven Central → BMCLAPI 镜像。
   BMCLAPI 对部分工件返回 403，若放在最前会导致构建失败。
 - 首次运行 `runData` / `runClient` 需要下载 Minecraft 资源（联网一次即可）。
+- JEI 依赖来自 `maven.blamejared.com`，仅编译期使用并自动下载；不装 JEI 也能正常构建。
 
 ## 数据生成（datagen）
 
@@ -227,6 +243,8 @@ gradlew runData
 7. **`Level.getCapability(Capability, BlockPos, Direction)` 编译错误** —— Forge 47.2.20 无此重载，
    改为先取相邻 `BlockEntity` 再查能力。
 8. **方块没有掉落表** —— 生存模式破坏机器原本不掉落，现由 datagen 生成 `loot_tables`。
+9. **JEI 无法查看机器配方** —— 配方原本硬编码在 `tick()`，JEI 抓不到；新增
+   `compat/jei` 插件，以独立分类展示两台机器的配方，并把方块注册为催化剂。
 
 ## 扩展指南
 
