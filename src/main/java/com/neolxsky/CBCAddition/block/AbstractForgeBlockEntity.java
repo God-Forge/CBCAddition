@@ -137,8 +137,15 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
 
     private int cooldown = 0;
 
+    /** 每个方向缓存一个能力实例：AE2 等模组会缓存 handler，不能每次新建。 */
+    private final LazyOptional<IItemHandler>[] faceHandlers = new LazyOptional[6];
+
     protected AbstractForgeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+        for (int i = 0; i < faceHandlers.length; i++) {
+            final Direction face = Direction.from3DDataValue(i);
+            faceHandlers[i] = LazyOptional.of(() -> new FaceHandler(face));
+        }
     }
 
     // ------------------------------------------------------------------
@@ -186,10 +193,7 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER && side != null) {
-            FaceMode mode = getFaceMode(side);
-            if (mode != FaceMode.DISABLED) {
-                return LazyOptional.of(() -> new FaceHandler(side, mode)).cast();
-            }
+            return faceHandlers[side.get3DDataValue()].cast();
         }
         return super.getCapability(cap, side);
     }
@@ -197,18 +201,22 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
     /** 暴露给某一面的 IItemHandler：输入面只允许插入，输出面只允许提取。 */
     private final class FaceHandler implements IItemHandler {
         private final Direction face;
-        private final FaceMode mode;
 
-        private FaceHandler(Direction face, FaceMode mode) {
+        private FaceHandler(Direction face) {
             this.face = face;
-            this.mode = mode;
+        }
+
+        /** 动态读取当前模式，保证 IO 面板修改后立即生效（AE2 等会缓存 handler）。 */
+        private FaceMode mode() {
+            return getFaceMode(face);
         }
 
         @Override
         public int getSlots() {
-            return switch (mode) {
+            return switch (mode()) {
                 case OUTPUT -> 1;
                 case BOTH -> 3;
+                case DISABLED -> 0;
                 default -> 2;
             };
         }
@@ -219,6 +227,7 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
         }
 
         private int toInternal(int slot) {
+            FaceMode mode = mode();
             if (mode == FaceMode.OUTPUT) {
                 return SLOT_OUTPUT;
             }
@@ -234,6 +243,7 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
 
         @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            FaceMode mode = mode();
             if (!mode.canInput()) {
                 return stack;
             }
@@ -245,6 +255,7 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
 
         @Override
         public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+            FaceMode mode = mode();
             if (!mode.canOutput()) {
                 return ItemStack.EMPTY;
             }
@@ -261,6 +272,7 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
 
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            FaceMode mode = mode();
             if (!mode.canInput()) {
                 return false;
             }
