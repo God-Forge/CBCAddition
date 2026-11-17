@@ -55,9 +55,10 @@
 | 节流 | 每 20 tick（1 秒）完成一次合成 |
 | 常量 | `COPPER_COST = 1`、`GOLD_COST = 1`、`OUTPUT_AMOUNT = 2`、`COOLDOWN_TICKS = 20` |
 
-外观：正面为自绘的熔炉材质；安山炉上下两面为自绘安山岩贴图，黄铜炉除正面外五面为自绘黄铜机壳。
-两台机器都有 `facing` 水平朝向属性，放置时朝向玩家。贴图位于
-`src/main/resources/assets/cbcaddition/textures/block/`（16×16 PNG）。
+外观：正面 / 侧面引用原版熔炉纹理（`minecraft:block/furnace_front` / `furnace_side`）；
+安山炉上下两面使用内置的 Create 安山岩贴图，黄铜炉除正面外五面使用内置的 Create 黄铜机壳贴图。
+两张贴图已从 Create 0.5.1.j 复制进 `src/main/resources/assets/cbcaddition/textures/block/`
+（16×16 PNG），因此未安装 Create 时也能正确显示。两台机器都有 `facing` 水平朝向属性，放置时朝向玩家。
 
 ### 合成判定
 
@@ -166,7 +167,7 @@ CBCAddition/
 ├── src/main/resources/
 │   ├── META-INF/mods.toml           # mod 元数据与依赖声明
 │   ├── pack.mcmeta                  # 资源包声明（pack_format 15）
-│   └── assets/cbcaddition/textures/block/   # 自绘贴图（4 张 16×16 PNG）
+│   └── assets/cbcaddition/textures/block/   # 内置贴图（2 张，复制自 Create）
 └── src/generated/resources/         # datagen 输出（随源码提交，.cache 已忽略）
     ├── assets/cbcaddition/{blockstates,models,lang}/
     └── data/cbcaddition/{recipes,loot_tables,advancements}/
@@ -219,7 +220,8 @@ gradlew runData
    两种机器共用同一个包，不再只更新安山炉。
 2. **`interact()` 是死代码** —— `Block#use` 现在先尝试潜行取产物 / 手持投料，未消费才开 GUI。
 3. **GUI 未使用常量** —— 删除 `FACES`、`BUTTON_X`、`BUTTON_Y`。
-4. **没有自带贴图** —— 自绘 4 张 16×16 贴图，模型改引用 `cbcaddition:block/*`，不再依赖 Create 材质。
+4. **没有自带贴图** —— 安山岩 / 黄铜机壳贴图复制自 Create 0.5.1.j 并内置（MIT），
+   熔炉正 / 侧面引用原版纹理，不再依赖 Create 运行时。
 5. **缺少 LICENSE** —— 补齐 GNU GPL v3.0 全文，`mod_license` 改为 `GPL-3.0-only`。
 6. **没有 datagen** —— 引入 `GatherDataEvent` 生成器，配方 / 模型 / 语言 / 掉落表全部自动生成。
 7. **`Level.getCapability(Capability, BlockPos, Direction)` 编译错误** —— Forge 47.2.20 无此重载，
@@ -267,6 +269,13 @@ public static final RegistryObject<Item> EXAMPLE =
 ## 许可
 
 本项目基于 **GNU General Public License v3.0** 发布，完整文本见 [LICENSE](LICENSE)。
+
+### 第三方资源
+
+- `assets/cbcaddition/textures/block/andesite_block.png`、`brass_casing.png`：复制自
+  [Create](https://github.com/Creators-of-Create/Create)（MIT License，© simibubi 及贡献者）。
+- 方块正面 / 侧面纹理直接引用原版 `minecraft:block/furnace_front` / `furnace_side`，
+  不随本模组分发。
 
 ```
 CBCAddition
