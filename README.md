@@ -7,7 +7,7 @@
 |---|---|
 | 模组 ID | `cbcaddition`（必须小写） |
 | 显示名 | `CBCAddition` |
-| 版本 | `0.3.0` |
+| 版本 | `0.4.0` |
 | Minecraft | `1.20.1` |
 | Forge | `47.2.20`（依赖范围 `[47,)`） |
 | Java | `17` |
@@ -163,9 +163,9 @@ Create 安山机壳贴图（`andesite_casing.png`，同样从 Create 0.5.1.j 复
 CBCAddition/
 ├── build.gradle                     # ForgeGradle 6 构建脚本（UTF-8 源码编码）
 ├── settings.gradle                  # 插件仓库（BMCLAPI 镜像优先）
-├── gradle.properties                # 版本 / mod 元数据（版本 0.3.0）
+├── gradle.properties                # 版本 / mod 元数据（版本 0.4.0）
 ├── LICENSE                          # GNU GPL v3.0 全文
-├── build/libs/cbcaddition-0.3.0.jar # 构建产物
+├── build/libs/cbcaddition-0.4.0.jar # 构建产物
 ├── src/main/java/com/neolxsky/CBCAddition/
 │   ├── CBCAddition.java             # 主类：注册表 + 网络 + 客户端初始化
 │   ├── block/
@@ -217,7 +217,7 @@ CBCAddition/
 
 ```bat
 set JAVA_HOME=C:\Users\neolx\.jdks\zulu17.0.21
-gradlew build          :: 产物：build/libs/cbcaddition-0.3.0.jar
+gradlew build          :: 产物：build/libs/cbcaddition-0.4.0.jar
 gradlew runClient      :: 启动开发客户端（工作目录 run/）
 gradlew runServer      :: 启动开发服务端（工作目录 run/）
 gradlew runData        :: 重新生成资源（输出到 src/generated/resources）
@@ -248,12 +248,12 @@ gradlew runData
 ## Git 与版本
 
 - 远程仓库：<https://github.com/God-Forge/CBCAddition>
-- 当前版本：`v0.3.0`（`gradle.properties` 的 `mod_version`）
+- 当前版本：`v0.4.0`（`gradle.properties` 的 `mod_version`）
 - 提交注释统一使用**简体中文**
 - **未经许可不得推送到 GitHub**：本地提交随意，推送前需先获得确认
 - 已忽略：`.gradle/`、`build/`、`run/`、IDE 配置等（见 `.gitignore`）
 
-## 修复记录（v0.3.0）
+## 修复记录（v0.4.0）
 
 本轮扫描发现的问题已全部处理：
 
