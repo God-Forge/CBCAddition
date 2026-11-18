@@ -137,6 +137,9 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
 
     private int cooldown = 0;
 
+    /** 自动弹出：开启后每 tick 从可输出面中随机挑一个弹射产物。 */
+    private boolean autoEject = true;
+
     /** 每个方向缓存一个能力实例：AE2 等模组会缓存 handler，不能每次新建。 */
     private final LazyOptional<IItemHandler>[] faceHandlers = new LazyOptional[6];
 
@@ -187,6 +190,15 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
     @Override
     public void setFaceMode(Direction direction, FaceMode mode) {
         faceModes[direction.get3DDataValue()] = mode;
+        setChanged();
+    }
+
+    public boolean getAutoEject() {
+        return autoEject;
+    }
+
+    public void setAutoEject(boolean autoEject) {
+        this.autoEject = autoEject;
         setChanged();
     }
 
@@ -293,10 +305,8 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
             return;
         }
 
-        for (Direction direction : Direction.values()) {
-            if (getFaceMode(direction).canOutput()) {
-                pushOutput(direction);
-            }
+        if (autoEject) {
+            ejectToRandomFace();
         }
 
         if (cooldown > 0) {
@@ -357,6 +367,21 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
         }
     }
 
+    /** 从所有可输出面中随机挑一个弹射产物；没有可输出面时什么都不做。 */
+    private void ejectToRandomFace() {
+        Direction[] outputs = new Direction[6];
+        int count = 0;
+        for (Direction direction : Direction.values()) {
+            if (getFaceMode(direction).canOutput()) {
+                outputs[count++] = direction;
+            }
+        }
+        if (count == 0) {
+            return;
+        }
+        pushOutput(outputs[level.random.nextInt(count)]);
+    }
+
     // ------------------------------------------------------------------
     // 快捷交互
     // ------------------------------------------------------------------
@@ -409,6 +434,7 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
         super.saveAdditional(tag);
         tag.put("Inventory", inventory.serializeNBT());
         tag.putInt("Cooldown", cooldown);
+        tag.putBoolean("AutoEject", autoEject);
         for (int i = 0; i < faceModes.length; i++) {
             tag.putByte("Face" + i, (byte) faceModes[i].ordinal());
         }
@@ -421,6 +447,9 @@ public abstract class AbstractForgeBlockEntity extends BlockEntity implements Me
             inventory.deserializeNBT(tag.getCompound("Inventory"));
         }
         cooldown = tag.getInt("Cooldown");
+        if (tag.contains("AutoEject")) {
+            autoEject = tag.getBoolean("AutoEject");
+        }
         for (int i = 0; i < faceModes.length; i++) {
             if (tag.contains("Face" + i)) {
                 int ordinal = tag.getByte("Face" + i);

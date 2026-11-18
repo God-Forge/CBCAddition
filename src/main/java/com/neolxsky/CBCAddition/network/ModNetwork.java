@@ -1,6 +1,7 @@
 package com.neolxsky.CBCAddition.network;
 
 import com.neolxsky.CBCAddition.CBCAddition;
+import com.neolxsky.CBCAddition.block.AbstractForgeBlockEntity;
 import com.neolxsky.CBCAddition.block.IOConfigurable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,6 +40,10 @@ public final class ModNetwork {
                 SetFaceModePacket::encode,
                 SetFaceModePacket::decode,
                 SetFaceModePacket::handle);
+        CHANNEL.registerMessage(1, SetAutoEjectPacket.class,
+                SetAutoEjectPacket::encode,
+                SetAutoEjectPacket::decode,
+                SetAutoEjectPacket::handle);
     }
 
     public record SetFaceModePacket(BlockPos pos, int face, int mode) {
@@ -68,6 +73,33 @@ public final class ModNetwork {
                 if (be instanceof IOConfigurable configurable) {
                     Direction face = Direction.from3DDataValue(packet.face());
                     configurable.setFaceMode(face, IOConfigurable.FaceMode.byOrdinal(packet.mode()));
+                }
+            });
+            ctx.setPacketHandled(true);
+        }
+    }
+
+    /** 客户端点击「自动弹出」按钮 → 服务端切换开关。 */
+    public record SetAutoEjectPacket(BlockPos pos, boolean enabled) {
+
+        public static void encode(SetAutoEjectPacket packet, FriendlyByteBuf buf) {
+            buf.writeBlockPos(packet.pos());
+            buf.writeBoolean(packet.enabled());
+        }
+
+        public static SetAutoEjectPacket decode(FriendlyByteBuf buf) {
+            return new SetAutoEjectPacket(buf.readBlockPos(), buf.readBoolean());
+        }
+
+        public static void handle(SetAutoEjectPacket packet, Supplier<NetworkEvent.Context> ctxSupplier) {
+            NetworkEvent.Context ctx = ctxSupplier.get();
+            ctx.enqueueWork(() -> {
+                ServerPlayer player = ctx.getSender();
+                if (player == null) {
+                    return;
+                }
+                if (player.level().getBlockEntity(packet.pos()) instanceof AbstractForgeBlockEntity machine) {
+                    machine.setAutoEject(packet.enabled());
                 }
             });
             ctx.setPacketHandled(true);

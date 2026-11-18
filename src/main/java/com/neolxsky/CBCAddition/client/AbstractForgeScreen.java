@@ -58,6 +58,15 @@ public abstract class AbstractForgeScreen<T extends AbstractForgeMenu> extends A
         graphics.renderOutline(ioX, ioY, BUTTON_SIZE, BUTTON_SIZE, 0xFFFFFFFF);
         graphics.drawString(font, "IO", ioX + 2, ioY + 4, 0xFFFFFFFF, false);
 
+        // 自动弹出按钮（开启：橙；关闭：灰）
+        int ejX = leftPos + IO_BUTTON_X;
+        int ejY = topPos + IO_BUTTON_Y + 20;
+        boolean ejectOn = menu.getAutoEject();
+        int ejColor = ejectOn ? 0xFFE65100 : 0xFF555555;
+        graphics.fill(ejX, ejY, ejX + BUTTON_SIZE, ejY + BUTTON_SIZE, ejColor);
+        graphics.renderOutline(ejX, ejY, BUTTON_SIZE, BUTTON_SIZE, 0xFFFFFFFF);
+        graphics.drawString(font, "弹", ejX + 4, ejY + 4, 0xFFFFFFFF, false);
+
         if (!showIO) {
             return;
         }
@@ -133,6 +142,18 @@ public abstract class AbstractForgeScreen<T extends AbstractForgeMenu> extends A
             int ioY = topPos + IO_BUTTON_Y;
             if (mouseX >= ioX && mouseX <= ioX + BUTTON_SIZE && mouseY >= ioY && mouseY <= ioY + BUTTON_SIZE) {
                 showIO = !showIO;
+                return true;
+            }
+
+            // 自动弹出按钮
+            int ejX = leftPos + IO_BUTTON_X;
+            int ejY = topPos + IO_BUTTON_Y + 20;
+            if (mouseX >= ejX && mouseX <= ejX + BUTTON_SIZE && mouseY >= ejY && mouseY <= ejY + BUTTON_SIZE) {
+                AbstractForgeBlockEntity be = menu.getBlockEntity();
+                if (be != null) {
+                    ModNetwork.CHANNEL.sendToServer(new ModNetwork.SetAutoEjectPacket(
+                            be.getBlockPos(), !menu.getAutoEject()));
+                }
                 return true;
             }
 

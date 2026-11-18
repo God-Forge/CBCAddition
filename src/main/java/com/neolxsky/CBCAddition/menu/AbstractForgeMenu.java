@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -16,6 +17,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public abstract class AbstractForgeMenu extends AbstractContainerMenu {
 
     protected final AbstractForgeBlockEntity blockEntity;
+
+    /** 自动弹出开关的同步槽位（0 = 关闭，1 = 开启）。 */
+    private final DataSlot autoEjectSlot;
 
     protected AbstractForgeMenu(MenuType<?> menuType, int id, Inventory playerInventory,
                                  AbstractForgeBlockEntity blockEntity) {
@@ -39,10 +43,29 @@ public abstract class AbstractForgeMenu extends AbstractContainerMenu {
         for (int col = 0; col < 9; col++) {
             addSlot(new Slot(playerInventory, col, 8 + col * 18, 142));
         }
+
+        // 同步「自动弹出」开关到客户端 GUI
+        this.autoEjectSlot = addDataSlot(new DataSlot() {
+            @Override
+            public int get() {
+                return blockEntity != null && blockEntity.getAutoEject() ? 1 : 0;
+            }
+
+            @Override
+            public void set(int value) {
+                if (blockEntity != null) {
+                    blockEntity.setAutoEject(value != 0);
+                }
+            }
+        });
     }
 
     public AbstractForgeBlockEntity getBlockEntity() {
         return blockEntity;
+    }
+
+    public boolean getAutoEject() {
+        return autoEjectSlot.get() == 1;
     }
 
     /** 从网络包读取方块实体（客户端构造用）。 */
