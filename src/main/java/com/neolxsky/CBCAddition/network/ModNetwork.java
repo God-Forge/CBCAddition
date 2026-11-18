@@ -3,6 +3,7 @@ package com.neolxsky.CBCAddition.network;
 import com.neolxsky.CBCAddition.CBCAddition;
 import com.neolxsky.CBCAddition.block.AbstractForgeBlockEntity;
 import com.neolxsky.CBCAddition.block.IOConfigurable;
+import com.neolxsky.CBCAddition.menu.InfinityCellConfiguratorMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
@@ -44,6 +45,10 @@ public final class ModNetwork {
                 SetAutoEjectPacket::encode,
                 SetAutoEjectPacket::decode,
                 SetAutoEjectPacket::handle);
+        CHANNEL.registerMessage(2, ConfiguratorCraftPacket.class,
+                ConfiguratorCraftPacket::encode,
+                ConfiguratorCraftPacket::decode,
+                ConfiguratorCraftPacket::handle);
     }
 
     public record SetFaceModePacket(BlockPos pos, int face, int mode) {
@@ -100,6 +105,29 @@ public final class ModNetwork {
                 }
                 if (player.level().getBlockEntity(packet.pos()) instanceof AbstractForgeBlockEntity machine) {
                     machine.setAutoEject(packet.enabled());
+                }
+            });
+            ctx.setPacketHandled(true);
+        }
+    }
+
+    /** 客户端点击「制造」按钮 → 服务端执行无限元件制造。 */
+    public record ConfiguratorCraftPacket() {
+
+        public static void encode(ConfiguratorCraftPacket packet, FriendlyByteBuf buf) {
+            // 无参数
+        }
+
+        public static ConfiguratorCraftPacket decode(FriendlyByteBuf buf) {
+            return new ConfiguratorCraftPacket();
+        }
+
+        public static void handle(ConfiguratorCraftPacket packet, Supplier<NetworkEvent.Context> ctxSupplier) {
+            NetworkEvent.Context ctx = ctxSupplier.get();
+            ctx.enqueueWork(() -> {
+                ServerPlayer player = ctx.getSender();
+                if (player != null && player.containerMenu instanceof InfinityCellConfiguratorMenu menu) {
+                    menu.tryCraft(player);
                 }
             });
             ctx.setPacketHandled(true);

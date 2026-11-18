@@ -19,5 +19,9 @@ public class ModItemModelProvider extends ItemModelProvider {
         withExistingParent("andesite_forge", modLoc("block/andesite_forge"));
         withExistingParent("brass_forge", modLoc("block/brass_forge"));
         withExistingParent("mechanical_core_assembler", modLoc("block/mechanical_core_assembler"));
+
+        getBuilder("infinity_cell_configurator")
+                .parent(getExistingFile(mcLoc("item/generated")))
+                .texture("layer0", modLoc("item/infinity_cell_configurator"));
     }
 }

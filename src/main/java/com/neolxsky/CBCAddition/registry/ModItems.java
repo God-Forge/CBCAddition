@@ -1,21 +1,24 @@
 package com.neolxsky.CBCAddition.registry;
 
 import com.neolxsky.CBCAddition.CBCAddition;
+import com.neolxsky.CBCAddition.item.InfinityCellConfiguratorItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 /**
  * 物品注册表。
- *
- * <p>如果暂时不需要自定义物品，可以保持为空；
- * 需要时在这里用 DeferredRegister 注册即可。</p>
  */
 public final class ModItems {
 
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, CBCAddition.MODID);
+
+    /** 无限元件配置器（手持右键打开 GUI）。 */
+    public static final RegistryObject<Item> INFINITY_CELL_CONFIGURATOR =
+            ITEMS.register("infinity_cell_configurator", InfinityCellConfiguratorItem::new);
 
     private ModItems() {
     }

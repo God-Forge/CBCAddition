@@ -24,12 +24,14 @@ public final class ModCreativeTabs {
             event.accept(ModBlocks.ANDESITE_FORGE_ITEM.get());
             event.accept(ModBlocks.BRASS_FORGE_ITEM.get());
             event.accept(ModBlocks.MECHANICAL_CORE_ASSEMBLER_ITEM.get());
+            event.accept(ModItems.INFINITY_CELL_CONFIGURATOR.get());
         }
         // 搜索标签：保证在创造模式搜索里能找到
         if (event.getTabKey() == CreativeModeTabs.SEARCH) {
             event.accept(ModBlocks.ANDESITE_FORGE_ITEM.get());
             event.accept(ModBlocks.BRASS_FORGE_ITEM.get());
             event.accept(ModBlocks.MECHANICAL_CORE_ASSEMBLER_ITEM.get());
+            event.accept(ModItems.INFINITY_CELL_CONFIGURATOR.get());
         }
     }
 }

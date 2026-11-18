@@ -1,5 +1,10 @@
 {
   "block.cbcaddition.andesite_forge": "Andesite Alloy Forge",
   "block.cbcaddition.brass_forge": "Brass Alloy Forge",
-  "block.cbcaddition.mechanical_core_assembler": "Mechanical Core Assembler"
+  "block.cbcaddition.mechanical_core_assembler": "Mechanical Core Assembler",
+  "item.cbcaddition.infinity_cell_configurator": "Infinity Cell Configurator",
+  "message.cbcaddition.configurator.no_component": "Requires one 16k storage component",
+  "message.cbcaddition.configurator.no_sample": "Put an item or fluid container in the sample slot",
+  "message.cbcaddition.configurator.output_full": "The output slot is occupied",
+  "message.cbcaddition.configurator.unavailable": "AE2 and ExtendedAE are required to craft infinity cells"
 }

@@ -1,5 +1,10 @@
 {
   "block.cbcaddition.andesite_forge": "安山合金炉",
   "block.cbcaddition.brass_forge": "黄铜合金炉",
-  "block.cbcaddition.mechanical_core_assembler": "机械核心装配机"
+  "block.cbcaddition.mechanical_core_assembler": "机械核心装配机",
+  "item.cbcaddition.infinity_cell_configurator": "无限元件配置器",
+  "message.cbcaddition.configurator.no_component": "需要 1 个 16k 存储组件",
+  "message.cbcaddition.configurator.no_sample": "请先在样品槽放入物品或流体容器",
+  "message.cbcaddition.configurator.output_full": "产物槽已有物品",
+  "message.cbcaddition.configurator.unavailable": "需要安装 AE2 与 ExtendedAE 才能制造无限元件"
 }

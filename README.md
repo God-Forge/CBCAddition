@@ -148,6 +148,19 @@ Create 安山机壳贴图（`andesite_casing.png`，同样从 Create 0.5.1.j 复
 - JEI 插件读取方块实体的常量与相关物品 ID；未装对应模组时不显示该配方，
   未装 JEI 时插件类不会被加载（编译期依赖，运行时不打包）
 
+### 无限元件配置器（Infinity Cell Configurator）
+
+| 项 | 内容 |
+|---|---|
+| 物品 ID | `cbcaddition:infinity_cell_configurator` |
+| 使用 | 手持右键打开 GUI（主手 / 副手均可） |
+| 样品槽 | 任意物品，或装有流体的容器（桶等）；只作参照、**不消耗** |
+| 消耗 | 1 个 `ae2:cell_component_16k`（16k 存储组件，从玩家背包扣除） |
+| 产物 | 对应物品 / 流体的 `expatternprovider:infinity_cell`（ExtendedAE 无限元件） |
+| 依赖 | AE2 + ExtendedAE（通过反射对接；未安装时提示不可用，物品本身仍可获得） |
+
+产物放入输出槽，关闭 GUI 时样品与产物会退回玩家背包。
+
 ### 简化配方
 
 | 配方 | 内容 | 说明 |
@@ -176,11 +189,14 @@ CBCAddition/
 │   │   ├── BrassForgeBlockEntity.java
 │   │   ├── MechanicalCoreAssemblerBlock.java        # 机械核心装配机方块
 │   │   └── MechanicalCoreAssemblerBlockEntity.java  # 两套无序配方 / 六面 IO / NBT
+│   ├── item/
+│   │   └── InfinityCellConfiguratorItem.java      # 无限元件配置器（手持右键开 GUI）
 │   ├── client/
 │   │   ├── ClientSetup.java               # 注册 GUI 屏幕（仅客户端）
 │   │   ├── AndesiteForgeScreen.java       # 熔炉背景 + IO 方向面板
 │   │   ├── BrassForgeScreen.java
-│   │   └── MechanicalCoreAssemblerScreen.java
+│   │   ├── MechanicalCoreAssemblerScreen.java
+│   │   └── InfinityCellConfiguratorScreen.java
 │   ├── datagen/                           # 数据生成（runData）
 │   │   ├── DataGenerators.java            # GatherDataEvent 入口
 │   │   ├── ModRecipeProvider.java         # 简化配方生成
@@ -192,14 +208,17 @@ CBCAddition/
 │   │   ├── CbcJeiPlugin.java              # 插件入口：RecipeType / 配方 / 催化剂
 │   │   ├── ForgeRecipe.java               # JEI 展示用配方数据
 │   │   └── ForgeRecipeCategory.java       # 熔炉槽位背景的配方分类
+│   ├── compat/extendedae/                 # ExtendedAE 无限元件对接（反射）
+│   │   └── EaeInfinityCellHelper.java     # 样品 → 无限元件
 │   ├── menu/
 │   │   ├── AndesiteForgeMenu.java         # 容器菜单（服务端 + 网络构造）
 │   │   ├── BrassForgeMenu.java
-│   │   └── MechanicalCoreAssemblerMenu.java
+│   │   ├── MechanicalCoreAssemblerMenu.java
+│   │   └── InfinityCellConfiguratorMenu.java
 │   ├── network/
-│   │   └── ModNetwork.java                # SimpleChannel + SetFaceModePacket（按接口处理）
+│   │   └── ModNetwork.java                # SimpleChannel：面模式 / 自动弹出 / 配置器制造
 │   └── registry/
-│       ├── ModItems.java                  # 物品注册表（当前为空，备用）
+│       ├── ModItems.java                  # 物品注册表（无限元件配置器）
 │       ├── ModBlocks.java                 # 方块 + BlockItem
 │       ├── ModBlockEntities.java          # 方块实体类型
 │       ├── ModMenus.java                  # MenuType
